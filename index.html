@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infografía — Modelado de BD | Clínica El Gato Feliz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --dark: #1A1A2E;
+    --teal: #0F7B8C;
+    --teal-light: #17A8BD;
+    --amber: #E8A020;
+    --rose: #D4526A;
+    --sage: #5A8A6A;
+    --card-bg: #FFFFFF;
+    --border: rgba(15,123,140,0.15);
+    --shadow: 0 8px 40px rgba(26,26,46,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    padding: 70px 40px 80px;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(15,123,140,0.35) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: '🐱';
+    position: absolute;
+    font-size: 280px;
+    opacity: 0.04;
+    top: -40px; right: -30px;
+    line-height: 1;
+  }
+  .hero-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 18px;
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.25s;
+  }
+  .hero h1 em {
+    color: var(--teal-light);
+    font-style: normal;
+  }
+  .hero-sub {
+    margin-top: 18px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.4s;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.55s;
+  }
+  .meta-chip {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 100px;
+    padding: 7px 18px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    font-family: 'Space Mono', monospace;
+  }
+  .meta-chip strong { color: #fff; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  section { padding: 60px 0; }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--teal);
+    opacity: 0.25;
+    max-width: 60px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 3.5vw, 38px);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 36px;
+    line-height: 1.2;
+  }
+
+  /* ── CASO DE ESTUDIO ── */
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media(max-width:700px){ .case-grid { grid-template-columns: 1fr; } }
+  .case-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .case-card:nth-child(1){ animation-delay: 0.1s; }
+  .case-card:nth-child(2){ animation-delay: 0.2s; }
+  .case-card:nth-child(3){ animation-delay: 0.3s; }
+  .case-card:nth-child(4){ animation-delay: 0.4s; }
+  .case-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .case-icon.teal { background: rgba(15,123,140,0.1); }
+  .case-icon.amber { background: rgba(232,160,32,0.12); }
+  .case-icon.rose { background: rgba(212,82,106,0.1); }
+  .case-icon.sage { background: rgba(90,138,106,0.1); }
+  .case-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .case-card p { font-size: 13px; color: #666; line-height: 1.6; }
+
+  /* ── ENTIDADES ── */
+  .entities-bg {
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+  .entities-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 80% 50%, rgba(15,123,140,0.2) 0%, transparent 70%);
+  }
+  .entities-bg .section-tag { color: var(--teal-light); }
+  .entities-bg .section-title { color: #fff; }
+
+  .entity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+  }
+  .entity-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 22px 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .entity-card:hover {
+    background: rgba(255,255,255,0.09);
+    transform: translateY(-3px);
+  }
+  .entity-card:nth-child(1){ animation-delay:0.1s; border-top: 3px solid var(--teal-light); }
+  .entity-card:nth-child(2){ animation-delay:0.2s; border-top: 3px solid var(--amber); }
+  .entity-card:nth-child(3){ animation-delay:0.3s; border-top: 3px solid var(--rose); }
+  .entity-card:nth-child(4){ animation-delay:0.4s; border-top: 3px solid var(--sage); }
+  .entity-card:nth-child(5){ animation-delay:0.5s; border-top: 3px solid #9B7FD4; }
+
+  .entity-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+  }
+  .entity-pk {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pk-badge {
+    background: var(--amber);
+    color: var(--dark);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .entity-attrs {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .entity-attrs li {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .entity-attrs li::before { content: '→'; color: rgba(255,255,255,0.2); font-size: 10px; }
+  .attr-type {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* ── RELACIONES ── */
+  .relations-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media(max-width:700px){ .relations-grid { grid-template-columns: 1fr; } }
+
+  .relation-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    position: relative;
+    overflow: hidden;
+  }
+  .relation-card:nth-child(1){ animation-delay:0.1s; }
+  .relation-card:nth-child(2){ animation-delay:0.2s; }
+  .relation-card:nth-child(3){ animation-delay:0.3s; }
+  .relation-card:nth-child(4){ animation-delay:0.4s; }
+
+  .relation-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .rel-teal::before { background: var(--teal); }
+  .rel-amber::before { background: var(--amber); }
+  .rel-rose::before { background: var(--rose); }
+  .rel-purple::before { background: #9B7FD4; }
+
+  .relation-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .relation-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: 1px;
+  }
+  .cardinality-badge {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 8px;
+  }
+  .card-teal { background: rgba(15,123,140,0.1); color: var(--teal); }
+  .card-amber { background: rgba(232,160,32,0.12); color: #B87A10; }
+  .card-rose { background: rgba(212,82,106,0.1); color: var(--rose); }
+  .card-purple { background: rgba(155,127,212,0.12); color: #6B4FA8; }
+
+  .relation-entities {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .entity-pill {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+  .arrow-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), var(--teal-light), var(--border));
+    position: relative;
+  }
+  .arrow-line::after {
+    content: '▶';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8px;
+    color: var(--teal-light);
+  }
+  .relation-desc {
+    font-size: 12.5px;
+    color: #777;
+    line-height: 1.6;
+  }
+  .mn-note {
+    margin-top: 20px;
+    background: linear-gradient(135deg, rgba(155,127,212,0.08), rgba(212,82,106,0.05));
+    border: 1px dashed rgba(155,127,212,0.3);
+    border-radius: 12px;
+    padding: 20px 22px;
+    grid-column: 1 / -1;
+  }
+  .mn-note h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9B7FD4;
+    margin-bottom: 10px;
+  }
+  .mn-note p { font-size: 13px; color: #555; line-height: 1.7; }
+  .mn-attrs {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .mn-attr {
+    background: rgba(155,127,212,0.1);
+    border: 1px solid rgba(155,127,212,0.2);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #7B5FB0;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── DIAGRAMA ── */
+  .diagram-section { background: #F0EBE0; }
+  .diagram-wrapper {
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 40px;
+    overflow-x: auto;
+  }
+  .erd-svg {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: block;
+  }
+  /* ERD Table styles */
+  .erd-table-header { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; fill:#fff; }
+  .erd-attr { font-family:'DM Sans',sans-serif; font-size:11px; fill:#444; }
+  .erd-type { font-family:'Space Mono',monospace; font-size:9px; fill:#999; }
+  .erd-pk-attr { font-family:'DM Sans',sans-serif; font-size:11px; fill:#1A1A2E; font-weight:600; }
+
+  /* ── SQL ── */
+  .sql-section { background: var(--dark); }
+  .sql-section .section-tag { color: var(--teal-light); }
+  .sql-section .section-title { color: #fff; }
+
+  .sql-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .sql-snippet {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .sql-snippet:nth-child(1){ animation-delay:0.1s; }
+  .sql-snippet:nth-child(2){ animation-delay:0.2s; }
+  .sql-snippet:nth-child(3){ animation-delay:0.3s; }
+  .sql-snippet-header {
+    background: rgba(15,123,140,0.2);
+    padding: 10px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot { width:8px; height:8px; border-radius:50%; }
+  .dot-r { background:#FF6B6B; }
+  .dot-y { background:#FFD93D; }
+  .dot-g { background:#6BCB77; }
+  pre {
+    padding: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.7);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .kw { color: #5BC8F5; }
+  .fn { color: var(--amber); }
+  .str { color: #A8D86E; }
+  .cm { color: rgba(255,255,255,0.3); font-style: italic; }
+  .nb { color: #FF9F7E; }
+
+  /* ── CONCLUSIONES ── */
+  .concl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .concl-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 28px 24px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    transition: transform 0.25s;
+  }
+  .concl-card:hover { transform: translateY(-4px); }
+  .concl-card:nth-child(1){ animation-delay:0.1s; }
+  .concl-card:nth-child(2){ animation-delay:0.2s; }
+  .concl-card:nth-child(3){ animation-delay:0.3s; }
+  .concl-card:nth-child(4){ animation-delay:0.4s; }
+  .concl-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 14px;
+    -webkit-text-stroke: 2px;
+  }
+  .num-teal { color: rgba(15,123,140,0.15); -webkit-text-stroke-color: var(--teal); }
+  .num-amber { color: rgba(232,160,32,0.12); -webkit-text-stroke-color: var(--amber); }
+  .num-rose { color: rgba(212,82,106,0.1); -webkit-text-stroke-color: var(--rose); }
+  .num-sage { color: rgba(90,138,106,0.1); -webkit-text-stroke-color: var(--sage); }
+  .concl-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--dark); line-height: 1.4; }
+  .concl-card p { font-size: 12.5px; color: #777; line-height: 1.7; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    padding: 40px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  footer p { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 2; }
+  footer a { color: var(--teal-light); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .footer-logo em { color: var(--teal-light); font-style: normal; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--teal-light));
+    border-radius: 2px;
+    margin: 0 0 24px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-label">Evaluación Sustitutoria · Modelado de Bases de Datos</span>
+  <h1>Clínica Veterinaria<br><em>El Gato Feliz</em></h1>
+  <p class="hero-sub">Modelo Entidad-Relación · Implementación SQL Server · Universidad Andina del Cusco</p>
+  <div class="hero-meta">
+    <span class="meta-chip">Alumno: <strong>Carlos E. Callo Gastañaga</strong></span>
+    <span class="meta-chip">Docente: <strong>Ing. Hugo Espetia Huamanga</strong></span>
+    <span class="meta-chip">Ing. de Sistemas · <strong>FIA · UAC</strong></span>
+  </div>
+</div>
+
+<!-- CASO DE ESTUDIO -->
+<section>
+  <div class="container">
+    <div class="section-tag">01 · Caso de Estudio</div>
+    <h2 class="section-title">¿Qué necesita digitalizar<br>la clínica?</h2>
+    <div class="case-grid">
+      <div class="case-card">
+        <div class="case-icon teal">👤</div>
+        <div>
+          <h3>Registro de Dueños</h3>
+          <p>DNI, nombre completo, número de teléfono y dirección de residencia. Cada dueño puede tener una o varias mascotas registradas.</p>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon amber">🐾</div>
+        <div>
+          <h3>Gestión de Mascotas</h3>
+          <p>Código, nombre, especie, raza y fecha de nacimiento. Cada mascota pertenece exclusivamente a un dueño.</p>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon rose">📋</div>
+        <div>
+          <h3>Consultas Médicas</h3>
+          <p>Fecha, hora y motivo de atención. Cada consulta está vinculada a una mascota y es atendida por un único veterinario.</p>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon sage">💊</div>
+        <div>
+          <h3>Prescripciones</h3>
+          <p>En cada consulta se pueden prescribir múltiples tratamientos. La dosis y duración son atributos propios de cada prescripción específica.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENTIDADES -->
+<section class="entities-bg">
+  <div class="container">
+    <div class="section-tag">02 · Entidades y Atributos</div>
+    <h2 class="section-title">Las 5 entidades del modelo</h2>
+    <div class="entity-grid">
+
+      <div class="entity-card">
+        <div class="entity-name">Entidad 01</div>
+        <div class="entity-pk"><span class="pk-badge">PK</span> DNI</div>
+        <div style="font-size:16px;margin-bottom:14px;font-family:'Playfair Display',serif;color:#fff;font-weight:700;">DUEÑO</div>
+        <ul class="entity-attrs">
+          <li>nombre <span class="attr-type">VARCHAR(100)</span></li>
+          <li>teléfono <span class="attr-type">VARCHAR(20)</span></li>
+          <li>dirección <span class="attr-type">VARCHAR(200)</span></li>
+        </ul>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-name">Entidad 02</div>
+        <div class="entity-pk"><span class="pk-badge">PK</span> codigo</div>
+        <div style="font-size:16px;margin-bottom:14px;font-family:'Playfair Display',serif;color:#fff;font-weight:700;">MASCOTA</div>
+        <ul class="entity-attrs">
+          <li>nombre <span class="attr-type">VARCHAR(60)</span></li>
+          <li>especie <span class="attr-type">VARCHAR(50)</span></li>
+          <li>raza <span class="attr-type">VARCHAR(80)</span></li>
+          <li>fecha_nacimiento <span class="attr-type">DATE</span></li>
+        </ul>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-name">Entidad 03</div>
+        <div class="entity-pk"><span class="pk-badge">PK</span> id_consulta</div>
+        <div style="font-size:16px;margin-bottom:14px;font-family:'Playfair Display',serif;color:#fff;font-weight:700;">CONSULTA</div>
+        <ul class="entity-attrs">
+          <li>fecha <span class="attr-type">DATE</span></li>
+          <li>hora <span class="attr-type">TIME</span></li>
+          <li>motivo <span class="attr-type">VARCHAR(300)</span></li>
+        </ul>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-name">Entidad 04</div>
+        <div class="entity-pk"><span class="pk-badge">PK</span> colegiado</div>
+        <div style="font-size:16px;margin-bottom:14px;font-family:'Playfair Display',serif;color:#fff;font-weight:700;">VETERINARIO</div>
+        <ul class="entity-attrs">
+          <li>nombre <span class="attr-type">VARCHAR(100)</span></li>
+          <li>especialidad <span class="attr-type">VARCHAR(80)</span></li>
+        </ul>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-name">Entidad 05</div>
+        <div class="entity-pk"><span class="pk-badge">PK</span> id_tratamiento</div>
+        <div style="font-size:16px;margin-bottom:14px;font-family:'Playfair Display',serif;color:#fff;font-weight:700;">TRATAMIENTO</div>
+        <ul class="entity-attrs">
+          <li>descripción <span class="attr-type">VARCHAR(200)</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RELACIONES -->
+<section>
+  <div class="container">
+    <div class="section-tag">03 · Relaciones y Cardinalidades</div>
+    <h2 class="section-title">Cómo se conectan<br>las entidades</h2>
+    <div class="relations-grid">
+
+      <div class="relation-card rel-teal">
+        <div class="relation-header">
+          <span class="relation-name">TIENE</span>
+          <span class="cardinality-badge card-teal">1 : N</span>
+        </div>
+        <div class="relation-entities">
+          <span class="entity-pill">DUEÑO</span>
+          <div class="arrow-line"></div>
+          <span class="entity-pill">MASCOTA</span>
+        </div>
+        <p class="relation-desc">Un dueño puede tener una o varias mascotas. Cada mascota pertenece a exactamente un dueño.</p>
+      </div>
+
+      <div class="relation-card rel-amber">
+        <div class="relation-header">
+          <span class="relation-name">GENERA</span>
+          <span class="cardinality-badge card-amber">1 : N</span>
+        </div>
+        <div class="relation-entities">
+          <span class="entity-pill">MASCOTA</span>
+          <div class="arrow-line"></div>
+          <span class="entity-pill">CONSULTA</span>
+        </div>
+        <p class="relation-desc">Una mascota puede tener muchas consultas a lo largo del tiempo. Cada consulta corresponde a una sola mascota.</p>
+      </div>
+
+      <div class="relation-card rel-rose">
+        <div class="relation-header">
+          <span class="relation-name">ATIENDE</span>
+          <span class="cardinality-badge card-rose">1 : N</span>
+        </div>
+        <div class="relation-entities">
+          <span class="entity-pill">VETERINARIO</span>
+          <div class="arrow-line"></div>
+          <span class="entity-pill">CONSULTA</span>
+        </div>
+        <p class="relation-desc">Un veterinario puede atender muchas consultas. Cada consulta es atendida por un único veterinario.</p>
+      </div>
+
+      <div class="relation-card rel-purple">
+        <div class="relation-header">
+          <span class="relation-name">PRESCRIBE</span>
+          <span class="cardinality-badge card-purple">M : N</span>
+        </div>
+        <div class="relation-entities">
+          <span class="entity-pill">CONSULTA</span>
+          <div class="arrow-line"></div>
+          <span class="entity-pill">TRATAMIENTO</span>
+        </div>
+        <p class="relation-desc">En una consulta se prescriben varios tratamientos, y un mismo tratamiento puede aparecer en varias consultas.</p>
+      </div>
+
+      <div class="mn-note">
+        <h4>⚠ Nota técnica · Relación M:N → Tabla intermedia</h4>
+        <p>La relación PRESCRIBE entre CONSULTA y TRATAMIENTO requiere la creación de la tabla intermedia <strong>CONSULTA_TRATAMIENTO</strong>. Esta tabla almacena las FKs de ambas entidades y los atributos propios de la prescripción que no pertenecen a ninguna entidad por separado:</p>
+        <div class="mn-attrs">
+          <span class="mn-attr">id_consulta FK</span>
+          <span class="mn-attr">id_tratamiento FK</span>
+          <span class="mn-attr">dosis</span>
+          <span class="mn-attr">duracion</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DIAGRAMA ERD -->
+<section class="diagram-section">
+  <div class="container">
+    <div class="section-tag">04 · Diagrama E-R</div>
+    <h2 class="section-title">Modelo conceptual visualizado</h2>
+    <div class="diagram-wrapper">
+      <svg class="erd-svg" viewBox="0 0 780 520" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#0F7B8C"/>
+          </marker>
+          <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.10)"/>
+          </filter>
+        </defs>
+
+        <!-- DUEÑO -->
+        <g filter="url(#shadow)">
+          <rect x="20" y="20" width="170" height="130" rx="10" fill="#fff" stroke="#E0E8EA" stroke-width="1.5"/>
+          <rect x="20" y="20" width="170" height="32" rx="10" fill="#0F7B8C"/>
+          <rect x="20" y="40" width="170" height="12" fill="#0F7B8C"/>
+          <text x="105" y="41" text-anchor="middle" class="erd-table-header" font-size="13">DUEÑO</text>
+          <!-- PK Row -->
+          <rect x="20" y="52" width="170" height="22" fill="#FFF8E8"/>
+          <text x="34" y="67" class="erd-pk-attr" font-size="11">🔑 DNI</text>
+          <text x="175" y="67" text-anchor="end" class="erd-type">VARCHAR(8)</text>
+          <!-- Attrs -->
+          <line x1="20" y1="74" x2="190" y2="74" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="89" class="erd-attr">nombre</text><text x="175" y="89" text-anchor="end" class="erd-type">VARCHAR(100)</text>
+          <line x1="20" y1="96" x2="190" y2="96" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="111" class="erd-attr">teléfono</text><text x="175" y="111" text-anchor="end" class="erd-type">VARCHAR(20)</text>
+          <line x1="20" y1="118" x2="190" y2="118" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="133" class="erd-attr">dirección</text><text x="175" y="133" text-anchor="end" class="erd-type">VARCHAR(200)</text>
+        </g>
+
+        <!-- MASCOTA -->
+        <g filter="url(#shadow)">
+          <rect x="20" y="210" width="190" height="160" rx="10" fill="#fff" stroke="#E0E8EA" stroke-width="1.5"/>
+          <rect x="20" y="210" width="190" height="32" rx="10" fill="#E8A020"/>
+          <rect x="20" y="230" width="190" height="12" fill="#E8A020"/>
+          <text x="115" y="231" text-anchor="middle" class="erd-table-header" font-size="13">MASCOTA</text>
+          <rect x="20" y="242" width="190" height="22" fill="#FFF8E8"/>
+          <text x="34" y="257" class="erd-pk-attr" font-size="11">🔑 codigo</text>
+          <text x="195" y="257" text-anchor="end" class="erd-type">INT IDENTITY</text>
+          <line x1="20" y1="264" x2="210" y2="264" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="279" class="erd-attr">nombre</text><text x="195" y="279" text-anchor="end" class="erd-type">VARCHAR(60)</text>
+          <line x1="20" y1="286" x2="210" y2="286" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="301" class="erd-attr">especie</text><text x="195" y="301" text-anchor="end" class="erd-type">VARCHAR(50)</text>
+          <line x1="20" y1="308" x2="210" y2="308" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="323" class="erd-attr">raza</text><text x="195" y="323" text-anchor="end" class="erd-type">VARCHAR(80)</text>
+          <line x1="20" y1="330" x2="210" y2="330" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="345" class="erd-attr">fecha_nacimiento</text><text x="195" y="345" text-anchor="end" class="erd-type">DATE</text>
+          <line x1="20" y1="352" x2="210" y2="352" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="34" y="367" class="erd-attr" fill="#999">🔗 DNI_dueno</text>
+        </g>
+
+        <!-- CONSULTA -->
+        <g filter="url(#shadow)">
+          <rect x="290" y="210" width="195" height="160" rx="10" fill="#fff" stroke="#E0E8EA" stroke-width="1.5"/>
+          <rect x="290" y="210" width="195" height="32" rx="10" fill="#D4526A"/>
+          <rect x="290" y="230" width="195" height="12" fill="#D4526A"/>
+          <text x="387" y="231" text-anchor="middle" class="erd-table-header" font-size="13">CONSULTA</text>
+          <rect x="290" y="242" width="195" height="22" fill="#FFF0F3"/>
+          <text x="304" y="257" class="erd-pk-attr" font-size="11">🔑 id_consulta</text>
+          <text x="470" y="257" text-anchor="end" class="erd-type">INT IDENTITY</text>
+          <line x1="290" y1="264" x2="485" y2="264" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="304" y="279" class="erd-attr">fecha</text><text x="470" y="279" text-anchor="end" class="erd-type">DATE</text>
+          <line x1="290" y1="286" x2="485" y2="286" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="304" y="301" class="erd-attr">hora</text><text x="470" y="301" text-anchor="end" class="erd-type">TIME</text>
+          <line x1="290" y1="308" x2="485" y2="308" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="304" y="323" class="erd-attr">motivo</text><text x="470" y="323" text-anchor="end" class="erd-type">VARCHAR(300)</text>
+          <line x1="290" y1="330" x2="485" y2="330" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="304" y="345" class="erd-attr" fill="#999">🔗 codigo_mascota</text>
+          <line x1="290" y1="352" x2="485" y2="352" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="304" y="367" class="erd-attr" fill="#999">🔗 colegiado_vet</text>
+        </g>
+
+        <!-- VETERINARIO -->
+        <g filter="url(#shadow)">
+          <rect x="290" y="420" width="195" height="88" rx="10" fill="#fff" stroke="#E0E8EA" stroke-width="1.5"/>
+          <rect x="290" y="420" width="195" height="32" rx="10" fill="#5A8A6A"/>
+          <rect x="290" y="440" width="195" height="12" fill="#5A8A6A"/>
+          <text x="387" y="441" text-anchor="middle" class="erd-table-header" font-size="13">VETERINARIO</text>
+          <rect x="290" y="452" width="195" height="22" fill="#F0FAF2"/>
+          <text x="304" y="467" class="erd-pk-attr" font-size="11">🔑 colegiado</text>
+          <text x="470" y="467" text-anchor="end" class="erd-type">VARCHAR(20)</text>
+          <line x1="290" y1="474" x2="485" y2="474" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="304" y="489" class="erd-attr">nombre · especialidad</text>
+        </g>
+
+        <!-- TRATAMIENTO -->
+        <g filter="url(#shadow)">
+          <rect x="570" y="20" width="190" height="88" rx="10" fill="#fff" stroke="#E0E8EA" stroke-width="1.5"/>
+          <rect x="570" y="20" width="190" height="32" rx="10" fill="#9B7FD4"/>
+          <rect x="570" y="40" width="190" height="12" fill="#9B7FD4"/>
+          <text x="665" y="41" text-anchor="middle" class="erd-table-header" font-size="13">TRATAMIENTO</text>
+          <rect x="570" y="52" width="190" height="22" fill="#F5F0FF"/>
+          <text x="584" y="67" class="erd-pk-attr" font-size="11">🔑 id_tratamiento</text>
+          <text x="745" y="67" text-anchor="end" class="erd-type">INT ID</text>
+          <line x1="570" y1="74" x2="760" y2="74" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="584" y="89" class="erd-attr">descripción</text>
+        </g>
+
+        <!-- CONSULTA_TRATAMIENTO -->
+        <g filter="url(#shadow)">
+          <rect x="570" y="210" width="195" height="130" rx="10" fill="#fff" stroke="#E0E8EA" stroke-width="1.5"/>
+          <rect x="570" y="210" width="195" height="32" rx="10" fill="#6B4FA8"/>
+          <rect x="570" y="230" width="195" height="12" fill="#6B4FA8"/>
+          <text x="667" y="231" text-anchor="middle" class="erd-table-header" font-size="11">CONSULTA_TRATAMIENTO</text>
+          <rect x="570" y="242" width="195" height="22" fill="#F5F0FF"/>
+          <text x="584" y="257" class="erd-pk-attr" font-size="11">🔑🔗 id_consulta</text>
+          <line x1="570" y1="264" x2="765" y2="264" stroke="#EEF2F3" stroke-width="1"/>
+          <rect x="570" y="264" width="195" height="22" fill="#F5F0FF"/>
+          <text x="584" y="279" class="erd-pk-attr" font-size="11">🔑🔗 id_tratamiento</text>
+          <line x1="570" y1="286" x2="765" y2="286" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="584" y="301" class="erd-attr">dosis</text><text x="750" y="301" text-anchor="end" class="erd-type">VARCHAR(100)</text>
+          <line x1="570" y1="308" x2="765" y2="308" stroke="#EEF2F3" stroke-width="1"/>
+          <text x="584" y="323" class="erd-attr">duracion</text><text x="750" y="323" text-anchor="end" class="erd-type">VARCHAR(80)</text>
+        </g>
+
+        <!-- LINES -->
+        <!-- Dueño → Mascota (1:N) -->
+        <line x1="105" y1="150" x2="105" y2="210" stroke="#0F7B8C" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="112" y="183" fill="#0F7B8C" font-size="10" font-family="Space Mono">1:N</text>
+
+        <!-- Mascota → Consulta (1:N) -->
+        <line x1="210" y1="290" x2="290" y2="290" stroke="#E8A020" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="238" y="283" fill="#E8A020" font-size="10" font-family="Space Mono">1:N</text>
+
+        <!-- Vet → Consulta (1:N) -->
+        <line x1="387" y1="420" x2="387" y2="370" stroke="#5A8A6A" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="394" y="400" fill="#5A8A6A" font-size="10" font-family="Space Mono">1:N</text>
+
+        <!-- Consulta → CT (M:N) -->
+        <line x1="485" y1="290" x2="570" y2="275" stroke="#9B7FD4" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="510" y="270" fill="#9B7FD4" font-size="10" font-family="Space Mono">M</text>
+
+        <!-- Tratamiento → CT -->
+        <line x1="665" y1="108" x2="665" y2="210" stroke="#9B7FD4" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="672" y="163" fill="#9B7FD4" font-size="10" font-family="Space Mono">N</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SQL -->
+<section class="sql-section">
+  <div class="container">
+    <div class="section-tag">05 · Implementación SQL Server</div>
+    <h2 class="section-title">Scripts de la base de datos</h2>
+    <div class="sql-grid">
+
+      <div class="sql-snippet">
+        <div class="sql-snippet-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          Creación · Tabla Dueño
+        </div>
+        <pre><span class="cm">-- Entidad principal: DUEÑO</span>
+<span class="kw">CREATE TABLE</span> Dueno (
+  DNI <span class="fn">VARCHAR</span>(<span class="nb">8</span>) <span class="kw">NOT NULL</span>,
+  nombre <span class="fn">VARCHAR</span>(<span class="nb">100</span>) <span class="kw">NOT NULL</span>,
+  telefono <span class="fn">VARCHAR</span>(<span class="nb">20</span>) <span class="kw">NULL</span>,
+  direccion <span class="fn">VARCHAR</span>(<span class="nb">200</span>) <span class="kw">NULL</span>,
+  <span class="kw">CONSTRAINT</span> PK_Dueno
+    <span class="kw">PRIMARY KEY</span> (DNI)
+);</pre>
+      </div>
+
+      <div class="sql-snippet">
+        <div class="sql-snippet-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          Relación M:N · Tabla Intermedia
+        </div>
+        <pre><span class="cm">-- Tabla intermedia PRESCRIBE</span>
+<span class="kw">CREATE TABLE</span> Consulta_Tratamiento (
+  id_consulta <span class="fn">INT</span> <span class="kw">NOT NULL</span>,
+  id_tratamiento <span class="fn">INT</span> <span class="kw">NOT NULL</span>,
+  dosis <span class="fn">VARCHAR</span>(<span class="nb">100</span>) <span class="kw">NOT NULL</span>,
+  duracion <span class="fn">VARCHAR</span>(<span class="nb">80</span>) <span class="kw">NOT NULL</span>,
+  <span class="kw">CONSTRAINT</span> PK_CT
+    <span class="kw">PRIMARY KEY</span>
+    (id_consulta, id_tratamiento)
+);</pre>
+      </div>
+
+      <div class="sql-snippet">
+        <div class="sql-snippet-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          Consulta de Verificación
+        </div>
+        <pre><span class="cm">-- Historial completo por mascota</span>
+<span class="kw">SELECT</span>
+  m.nombre <span class="kw">AS</span> mascota,
+  c.fecha, c.motivo,
+  v.nombre <span class="kw">AS</span> veterinario,
+  t.descripcion,
+  ct.dosis, ct.duracion
+<span class="kw">FROM</span> Consulta c
+<span class="kw">JOIN</span> Mascota m <span class="kw">ON</span> ...
+<span class="kw">JOIN</span> Veterinario v <span class="kw">ON</span> ...
+<span class="kw">ORDER BY</span> c.fecha <span class="kw">DESC</span>;</pre>
+      </div>
+
+    </div>
+
+    <!-- Stats Row -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:28px;">
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center;opacity:0;animation:fadeUp 0.6s ease forwards 0.1s">
+        <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#17A8BD;">5</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Entidades</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center;opacity:0;animation:fadeUp 0.6s ease forwards 0.2s">
+        <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#E8A020;">4</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Relaciones</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center;opacity:0;animation:fadeUp 0.6s ease forwards 0.3s">
+        <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#D4526A;">6</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Tablas SQL</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center;opacity:0;animation:fadeUp 0.6s ease forwards 0.4s">
+        <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#9B7FD4;">4</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Índices</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center;opacity:0;animation:fadeUp 0.6s ease forwards 0.5s">
+        <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#5A8A6A;">8</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Consultas médicas</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;text-align:center;opacity:0;animation:fadeUp 0.6s ease forwards 0.6s">
+        <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#fff;">15</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Prescripciones</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSIONES -->
+<section>
+  <div class="container">
+    <div class="section-tag">06 · Conclusiones</div>
+    <h2 class="section-title">Aprendizajes clave<br>del proyecto</h2>
+    <div class="concl-grid">
+      <div class="concl-card">
+        <div class="concl-num num-teal">01</div>
+        <h3>El modelo E-R como base del diseño</h3>
+        <p>El modelo Entidad-Relación es fundamental para estructurar la información antes de implementar. Permite identificar datos relevantes, separar responsabilidades y evitar redundancias.</p>
+      </div>
+      <div class="concl-card">
+        <div class="concl-num num-amber">02</div>
+        <h3>Importancia de las cardinalidades</h3>
+        <p>Entender la diferencia entre 1:N y M:N tiene implicaciones directas en la implementación. La relación M:N entre CONSULTA y TRATAMIENTO requirió una tabla intermedia con atributos propios.</p>
+      </div>
+      <div class="concl-card">
+        <div class="concl-num num-rose">03</div>
+        <h3>Del diagrama al SQL</h3>
+        <p>Cada entidad se convierte en tabla, cada atributo en columna, y cada relación en FK o tabla intermedia. Un diagrama bien construido agiliza enormemente la implementación.</p>
+      </div>
+      <div class="concl-card">
+        <div class="concl-num num-sage">04</div>
+        <h3>Competencia profesional aplicable</h3>
+        <p>El modelado E-R no es solo un requisito académico: es una competencia directamente aplicable en ingeniería de sistemas y desarrollo de software real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">El Gato <em>Feliz</em></div>
+  <p>
+    Carlos Eduardo Callo Gastañaga · Ingeniería de Sistemas<br>
+    Universidad Andina del Cusco · Facultad de Ingeniería y Arquitectura<br>
+    Docente: Ing. Hugo Espetia Huamanga<br><br>
+    <a href="https://github.com/Carlos165131/Evaluaci-n-sustitutoria.git" target="_blank">GitHub →</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="https://lucid.app/lucidchart/8c6a330e-0c6d-4fe2-a56c-7fab69aa4405/edit" target="_blank">Lucidchart →</a>
+  </p>
+</footer>
+
+</body>
+</html>
